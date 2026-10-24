@@ -2,7 +2,7 @@ package com.devlotfi.kanyon
 
 import com.devlotfi.kanyon.schema.BaseSchema
 
-class ValidationHandler<T>(
+class ValidationHandlerCase<T>(
     val validationHandler: (value: T) -> Boolean,
     override val userError: String? = null
 ) : BuilderCase<T>() {
@@ -19,5 +19,5 @@ fun <T, S : BaseSchema<T, S>> S.validateHandler(
     validationHandler: (value: T) -> Boolean,
     error: String
 ): S {
-    return case(ValidationHandler(validationHandler, error))
+    return case(ValidationHandlerCase(validationHandler, error))
 }

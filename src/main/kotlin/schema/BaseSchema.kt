@@ -3,6 +3,7 @@ package com.devlotfi.kanyon.schema
 import com.devlotfi.kanyon.BuilderCase
 
 fun <T, S : BaseSchema<T, S>> S.nullable(): S {
+    val root = this.root
     if (root != null) {
         root.isNullable = true
     } else if (this is FieldSchema) {
@@ -11,11 +12,10 @@ fun <T, S : BaseSchema<T, S>> S.nullable(): S {
     return self
 }
 
-abstract class BaseSchema<T, S : BaseSchema<T, S>>(
-    val root: FieldSchema? = null
-) {
+abstract class BaseSchema<T, S : BaseSchema<T, S>> {
     protected val cases = mutableListOf<BuilderCase<T>>()
     abstract val self: S
+    abstract val root: FieldSchema?
 
     open fun validate(value: T): String? {
         cases.forEach {

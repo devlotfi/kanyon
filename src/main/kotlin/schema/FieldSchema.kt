@@ -2,32 +2,181 @@ package com.devlotfi.kanyon.schema
 
 import com.devlotfi.kanyon.BuilderCase
 
-class StringCase(
-    val schema: StringSchema,
-    override val userError: String? = null
-) : BuilderCase<Any?>() {
-    override fun validate(value: Any?): String? {
-        if (value is String) {
-            return schema.validate(value)
+sealed class FieldCases {
+    class StringCase(
+        val schema: StringSchema,
+        override val userError: String? = null
+    ) : BuilderCase<Any?>() {
+        override fun validate(value: Any?): String? {
+            if (value is String) {
+                return schema.validate(value)
+            }
+            return getError()
         }
-        return getError()
+
+        override fun errorFactory(): String {
+            return "Value must be a string"
+        }
     }
 
-    override fun errorFactory(): String {
-        return "Value must be a string"
+    class ByteCase(
+        val schema: ByteSchema,
+        override val userError: String? = null
+    ) : BuilderCase<Any?>() {
+        override fun validate(value: Any?): String? {
+            if (value is Byte) {
+                return schema.validate(value)
+            }
+            return getError()
+        }
+
+        override fun errorFactory(): String {
+            return "Value must be a byte"
+        }
+    }
+
+    class ShortCase(
+        val schema: ShortSchema,
+        override val userError: String? = null
+    ) : BuilderCase<Any?>() {
+        override fun validate(value: Any?): String? {
+            if (value is Short) {
+                return schema.validate(value)
+            }
+            return getError()
+        }
+
+        override fun errorFactory(): String {
+            return "Value must be a short"
+        }
+    }
+
+    class IntCase(
+        val schema: IntSchema,
+        override val userError: String? = null
+    ) : BuilderCase<Any?>() {
+        override fun validate(value: Any?): String? {
+            if (value is Int) {
+                return schema.validate(value)
+            }
+            return getError()
+        }
+
+        override fun errorFactory(): String {
+            return "Value must be an int"
+        }
+    }
+
+    class LongCase(
+        val schema: LongSchema,
+        override val userError: String? = null
+    ) : BuilderCase<Any?>() {
+        override fun validate(value: Any?): String? {
+            if (value is Long) {
+                return schema.validate(value)
+            }
+            return getError()
+        }
+
+        override fun errorFactory(): String {
+            return "Value must be a long"
+        }
+    }
+
+    class FloatCase(
+        val schema: FloatSchema,
+        override val userError: String? = null
+    ) : BuilderCase<Any?>() {
+        override fun validate(value: Any?): String? {
+            if (value is Float) {
+                return schema.validate(value)
+            }
+            return getError()
+        }
+
+        override fun errorFactory(): String {
+            return "Value must be a float"
+        }
+    }
+
+    class DoubleCase(
+        val schema: DoubleSchema,
+        override val userError: String? = null
+    ) : BuilderCase<Any?>() {
+        override fun validate(value: Any?): String? {
+            if (value is Double) {
+                return schema.validate(value)
+            }
+            return getError()
+        }
+
+        override fun errorFactory(): String {
+            return "Value must be a double"
+        }
+    }
+
+    class BooleanCase(
+        val schema: BooleanSchema,
+        override val userError: String? = null
+    ) : BuilderCase<Any?>() {
+        override fun validate(value: Any?): String? {
+            if (value is Boolean) {
+                return schema.validate(value)
+            }
+            return getError()
+        }
+
+        override fun errorFactory(): String {
+            return "Value must be a boolean"
+        }
     }
 }
 
-class FieldSchema() : BaseSchema<Any?, FieldSchema>(root = null) {
+class FieldSchema(
+    override val root: FieldSchema? = null
+) : BaseSchema<Any?, FieldSchema>() {
     override val self get() = this
     var isNullable = false
 
-    fun string(error: String? = null): StringSchema {
-        val stringSchema = StringSchema(this)
-        val stringCase = StringCase(stringSchema, userError = error)
-        case(stringCase)
-        return stringSchema
-    }
+    fun string(error: String? = null): StringSchema =
+        StringSchema(this).also {
+            case(FieldCases.StringCase(it, userError = error))
+        }
+
+    fun byte(error: String? = null): ByteSchema =
+        ByteSchema(this).also {
+            case(FieldCases.ByteCase(it, userError = error))
+        }
+
+    fun short(error: String? = null): ShortSchema =
+        ShortSchema(this).also {
+            case(FieldCases.ShortCase(it, userError = error))
+        }
+
+    fun int(error: String? = null): IntSchema =
+        IntSchema(this).also {
+            case(FieldCases.IntCase(it, userError = error))
+        }
+
+    fun long(error: String? = null): LongSchema =
+        LongSchema(this).also {
+            case(FieldCases.LongCase(it, userError = error))
+        }
+
+    fun float(error: String? = null): FloatSchema =
+        FloatSchema(this).also {
+            case(FieldCases.FloatCase(it, userError = error))
+        }
+
+    fun double(error: String? = null): DoubleSchema =
+        DoubleSchema(this).also {
+            case(FieldCases.DoubleCase(it, userError = error))
+        }
+
+    fun boolean(error: String? = null): BooleanSchema =
+        BooleanSchema(this).also {
+            case(FieldCases.BooleanCase(it, userError = error))
+        }
 
     override fun validate(value: Any?): String? {
         if (value == null && isNullable) return null
