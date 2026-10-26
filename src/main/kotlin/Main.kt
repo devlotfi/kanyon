@@ -29,8 +29,16 @@ fun main() {
     println("Validation: ${validation.validate(null)}")
 
     val validation2 = FieldSchema().int().gt(10).multipleOf(5).build()
-    FieldSchema().boolean().eq(true).build()
     println("Validation: ${validation2.validate(15)}")
+
+    val validation3 = FieldSchema().validateHandler(
+        validationHandler = { value ->
+            return@validateHandler value is List<*> && value.size > 2
+        },
+        error = "List error"
+    ).build()
+    println("Validation: ${validation3.validate(15)}")
+
     val lol = User(
         firstName = "Lol",
         lastName = "Lol",
@@ -39,7 +47,4 @@ fun main() {
     )
     println(lol.valid())
     println(lol.validate())
-
-    val testa = null
-    requireNotNull(testa)
 }
