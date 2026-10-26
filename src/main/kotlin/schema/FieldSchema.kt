@@ -3,6 +3,22 @@ package com.devlotfi.kanyon.schema
 import com.devlotfi.kanyon.BuilderCase
 
 sealed class FieldCases {
+    class AnyCase(
+        val schema: AnySchema,
+        override val userError: String? = null
+    ) : BuilderCase<Any?>() {
+        override fun validate(value: Any?): String? {
+            if (value is Any) {
+                return schema.validate(value)
+            }
+            return getError()
+        }
+
+        override fun errorFactory(): String {
+            return "Value must be any"
+        }
+    }
+
     class StringCase(
         val schema: StringSchema,
         override val userError: String? = null
@@ -137,6 +153,11 @@ class FieldSchema(
 ) : BaseSchema<Any?, FieldSchema>() {
     override val self get() = this
     var isNullable = false
+
+    fun any(error: String? = null): AnySchema =
+        AnySchema(this).also {
+            case(FieldCases.AnyCase(it, userError = error))
+        }
 
     fun string(error: String? = null): StringSchema =
         StringSchema(this).also {

@@ -21,8 +21,8 @@ enum class Options(lol1: String) {
 
 fun main() {
     val validation = FieldSchema().string().min(2).max(10).notBlank().validateHandler(
-        validationHandler = { value ->
-            return@validateHandler value != "testa"
+        validationHandler = {
+            it != "testa"
         },
         error = "Function works"
     ).nullable().build()
@@ -31,13 +31,13 @@ fun main() {
     val validation2 = FieldSchema().int().gt(10).multipleOf(5).build()
     println("Validation: ${validation2.validate(15)}")
 
-    val validation3 = FieldSchema().validateHandler(
-        validationHandler = { value ->
-            return@validateHandler value is List<*> && value.size > 2
+    val validation3 = FieldSchema().any().validateHandler(
+        validationHandler = {
+            it is List<*> && it.size > 2
         },
         error = "List error"
     ).build()
-    println("Validation: ${validation3.validate(15)}")
+    println("Validation: ${validation3.validate(listOf("lol", "lol", "lol"))}")
 
     val lol = User(
         firstName = "Lol",
