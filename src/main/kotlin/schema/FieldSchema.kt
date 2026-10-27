@@ -19,6 +19,44 @@ sealed class FieldCases {
         }
     }
 
+    class IsCase<E>(
+        val typeName: String,
+        val isInstance: (Any?) -> Boolean,
+        val schema: IsSchema<E>,
+        override val userError: String? = null
+    ) : BuilderCase<Any?>() {
+        override fun validate(value: Any?): String? {
+            if (isInstance(value)) {
+                @Suppress("UNCHECKED_CAST")
+                return schema.validate(value as E)
+            }
+            return getError()
+        }
+
+        override fun errorFactory(): String {
+            return "Value must be a $typeName"
+        }
+    }
+
+    class EnumCase<E : Enum<E>>(
+        val typeName: String,
+        val isInstance: (Any?) -> Boolean,
+        val schema: EnumSchema<E>,
+        override val userError: String? = null
+    ) : BuilderCase<Any?>() {
+        override fun validate(value: Any?): String? {
+            if (isInstance(value)) {
+                @Suppress("UNCHECKED_CAST")
+                return schema.validate(value as E)
+            }
+            return getError()
+        }
+
+        override fun errorFactory(): String {
+            return "Value must be a $typeName"
+        }
+    }
+
     class StringCase(
         val schema: StringSchema,
         override val userError: String? = null
@@ -157,6 +195,16 @@ class FieldSchema(
     fun any(error: String? = null): AnySchema =
         AnySchema(this).also {
             case(FieldCases.AnyCase(it, userError = error))
+        }
+
+    inline fun <reified E : Any> isOf(error: String? = null): IsSchema<E> =
+        IsSchema<E>(this).also {
+            case(FieldCases.IsCase(E::class.simpleName ?: "any", { v -> v is E }, it, userError = error))
+        }
+
+    inline fun <reified E : Enum<E>> enumOf(error: String? = null): EnumSchema<E> =
+        EnumSchema<E>(this).also {
+            case(FieldCases.EnumCase(E::class.simpleName ?: "enum", { v -> v is E }, it, userError = error))
         }
 
     fun string(error: String? = null): StringSchema =

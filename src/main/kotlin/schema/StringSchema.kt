@@ -1,9 +1,9 @@
 package com.devlotfi.kanyon.schema
 
 import com.devlotfi.kanyon.BuilderCase
-import java.net.URI
-import java.net.URISyntaxException
-import java.util.*
+
+// Pure Kotlin common code: no java.*, no javax.*, no Android APIs.
+// Safe for JVM, Android, JS, Native (KMP).
 
 // ---------------------------------------------------------------------------
 // Enums used as parameters
@@ -28,7 +28,8 @@ enum class HashAlgorithm(val byteLength: Int) {
 enum class HashEncoding { HEX, BASE64, BASE64URL }
 
 // ---------------------------------------------------------------------------
-// Precompiled patterns + helpers (compiled once, never inside validate())
+// Precompiled patterns + helpers (compiled once, never inside validate()).
+// Note: [0-9] is used instead of \d on purpose, so behavior is identical on every platform.
 // ---------------------------------------------------------------------------
 
 internal object StringPatterns {
@@ -57,20 +58,11 @@ internal object StringPatterns {
     fun uuid(version: UuidVersion?): Regex =
         if (version == null) UUID_ANY else UUID_BY_VERSION.getValue(version)
 
-    val GUID = Regex("$HEX{8}-$HEX{4}-$HEX{4}-$HEX{4}-$HEX{12}")
-    val CUID = Regex("[cC][^\\s-]{8,}")
-    val CUID2 = Regex("[0-9a-z]+")
-    val ULID = Regex("[0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{26}")
-    val E164 = Regex("\\+[1-9]\\d{6,14}")
-    val IBAN_FORMAT = Regex("[A-Z]{2}\\d{2}[A-Z0-9]{11,30}")
-    val CREDIT_CARD_FORMAT = Regex("\\d+(?:[ -]\\d+)*")
+    val E164 = Regex("\\+[1-9][0-9]{6,14}")
+    val IBAN_FORMAT = Regex("[A-Z]{2}[0-9]{2}[A-Z0-9]{11,30}")
+    val CREDIT_CARD_FORMAT = Regex("[0-9]+(?:[ -][0-9]+)*")
     val JWT_ALG = Regex("\"alg\"\\s*:\\s*\"([^\"]*)\"")
     val JWT_TYP = Regex("\"typ\"\\s*:\\s*\"([^\"]*)\"")
-
-    fun nanoid(length: Int): Regex {
-        require(length > 0) { "nanoid length must be > 0" }
-        return Regex("[a-zA-Z0-9_-]{$length}")
-    }
 
     fun hexColor(lengths: Set<Int>, hash: Boolean): Regex {
         require(lengths.isNotEmpty() && lengths.all { it in setOf(3, 4, 6, 8) }) {
@@ -173,34 +165,11 @@ internal fun ibanChecksumValid(iban: String): Boolean {
     return rem == 1
 }
 
-private fun isEmojiCodePoint(cp: Int): Boolean =
-    cp in 0x1F000..0x1FAFF ||   // emoticons, symbols, pictographs, flags, skin tones
-            cp in 0x2600..0x27BF ||     // misc symbols + dingbats
-            cp in 0x2300..0x23FF ||     // misc technical (⌚ ⏰ ...)
-            cp in 0x2B00..0x2BFF ||     // ⬆ ⭐ ...
-            cp in 0x2190..0x21FF ||     // arrows
-            cp in 0x2900..0x297F ||     // ⤴ ⤵
-            cp == 0x00A9 || cp == 0x00AE || cp == 0x203C || cp == 0x2049 ||
-            cp == 0x2122 || cp == 0x2139 || cp == 0x24C2 ||
-            cp in 0x25AA..0x25FE ||
-            cp == 0x3030 || cp == 0x303D || cp == 0x3297 || cp == 0x3299 ||
-            cp == 0x200D || cp == 0xFE0F || cp == 0x20E3 ||   // ZWJ, VS16, keycap (components)
-            cp in 0xE0020..0xE007F                            // tag characters (subdivision flags)
+// --- ISO date / time ---------------------------------------------------------
 
-internal fun isEmoji(value: String): Boolean {
-    if (value.isEmpty()) return false
-    var i = 0
-    while (i < value.length) {
-        val cp = value.codePointAt(i)
-        if (!isEmojiCodePoint(cp)) return false
-        i += Character.charCount(cp)
-    }
-    return true
-}
-
-private const val HH_MM = "(?:[01]\\d|2[0-3]):[0-5]\\d"
-private const val OFFSET = "[+-](?:[01]\\d|2[0-3]):[0-5]\\d"
-private const val ISO_DATE = "(\\d{4})-(\\d{2})-(\\d{2})"
+private const val HH_MM = "(?:[01][0-9]|2[0-3]):[0-5][0-9]"
+private const val OFFSET = "[+-](?:[01][0-9]|2[0-3]):[0-5][0-9]"
+private const val ISO_DATE = "([0-9]{4})-([0-9]{2})-([0-9]{2})"
 
 private fun requirePrecision(precision: Int?) {
     require(precision == null || precision >= -1) {
@@ -212,10 +181,10 @@ private fun requirePrecision(precision: Int?) {
 internal fun isoTimeRegex(precision: Int?): Regex {
     requirePrecision(precision)
     val source = when {
-        precision == null -> "$HH_MM(?::[0-5]\\d(?:\\.\\d+)?)?"
+        precision == null -> "$HH_MM(?::[0-5][0-9](?:\\.[0-9]+)?)?"
         precision == -1 -> HH_MM
-        precision == 0 -> "$HH_MM:[0-5]\\d"
-        else -> "$HH_MM:[0-5]\\d\\.\\d{$precision}"
+        precision == 0 -> "$HH_MM:[0-5][0-9]"
+        else -> "$HH_MM:[0-5][0-9]\\.[0-9]{$precision}"
     }
     return Regex(source)
 }
@@ -230,12 +199,12 @@ internal fun isoDateTimeRegex(offset: Boolean, local: Boolean, precision: Int?):
     val tzSuffix = if (local) "(?:$tz)?" else "(?:$tz)"
     val time = when {
         precision == null && local ->
-            "(?:$HH_MM(?::[0-5]\\d(?:\\.\\d+)?)?|$HH_MM:[0-5]\\d(?:\\.\\d+)?(?:$tz))"
+            "(?:$HH_MM(?::[0-5][0-9](?:\\.[0-9]+)?)?|$HH_MM:[0-5][0-9](?:\\.[0-9]+)?(?:$tz))"
 
-        precision == null -> "$HH_MM:[0-5]\\d(?:\\.\\d+)?$tzSuffix"
+        precision == null -> "$HH_MM:[0-5][0-9](?:\\.[0-9]+)?$tzSuffix"
         precision == -1 -> "$HH_MM$tzSuffix"
-        precision == 0 -> "$HH_MM:[0-5]\\d$tzSuffix"
-        else -> "$HH_MM:[0-5]\\d\\.\\d{$precision}$tzSuffix"
+        precision == 0 -> "$HH_MM:[0-5][0-9]$tzSuffix"
+        else -> "$HH_MM:[0-5][0-9]\\.[0-9]{$precision}$tzSuffix"
     }
     return Regex("${ISO_DATE}T$time")
 }
@@ -251,6 +220,88 @@ internal fun isValidCalendarDate(year: Int, month: Int, day: Int): Boolean {
         else -> 31
     }
     return day <= daysInMonth
+}
+
+// --- URL (pure Kotlin replacement for java.net.URI) ---------------------------
+
+internal class ParsedUrl(val scheme: String, val host: String?)
+
+private fun isScheme(s: String): Boolean {
+    if (s.isEmpty() || !(s[0] in 'a'..'z' || s[0] in 'A'..'Z')) return false
+    return s.all { it in 'a'..'z' || it in 'A'..'Z' || it in '0'..'9' || it == '+' || it == '-' || it == '.' }
+}
+
+/**
+ * Lenient WHATWG-style check: scheme is required, no whitespace/control characters,
+ * and if there is an authority ("//...") the host and port must be well-formed.
+ * "mailto:a@b.dev" and "http://localhost" are valid; "example.com" is not.
+ */
+internal fun parseUrl(value: String): ParsedUrl? {
+    if (value.any { it.isWhitespace() || it.code <= 0x20 || it.code == 0x7F }) return null
+    val colon = value.indexOf(':')
+    if (colon <= 0) return null
+    val scheme = value.substring(0, colon)
+    if (!isScheme(scheme)) return null
+
+    val rest = value.substring(colon + 1)
+    if (!rest.startsWith("//")) return ParsedUrl(scheme, null) // opaque form: mailto:, urn:, ...
+
+    val afterSlashes = rest.substring(2)
+    val end = afterSlashes.indexOfFirst { it == '/' || it == '?' || it == '#' }
+    val authority = if (end >= 0) afterSlashes.substring(0, end) else afterSlashes
+    val hostPort = authority.substring(authority.lastIndexOf('@') + 1) // strips user:pass@
+
+    val host: String
+    val port: String?
+    if (hostPort.startsWith("[")) {
+        val close = hostPort.indexOf(']')
+        if (close < 0) return null
+        host = hostPort.substring(1, close)
+        if (!isIpv6(host)) return null
+        val after = hostPort.substring(close + 1)
+        port = when {
+            after.isEmpty() -> null
+            after.startsWith(":") -> after.substring(1)
+            else -> return null
+        }
+    } else {
+        val c = hostPort.lastIndexOf(':')
+        host = if (c >= 0) hostPort.substring(0, c) else hostPort
+        port = if (c >= 0) hostPort.substring(c + 1) else null
+        if (host.any { it in "[]@:\\" }) return null
+    }
+
+    if (host.isEmpty() && !scheme.equals("file", ignoreCase = true)) return null
+    if (!port.isNullOrEmpty() && !(isDigits(port) && port.length <= 5 && port.toInt() <= 65535)) return null
+    return ParsedUrl(scheme, host)
+}
+
+// --- base64url decoding (pure Kotlin replacement for java.util.Base64) ---------
+
+/** Strict, unpadded base64url decoder. Returns null on any invalid character or length. */
+internal fun decodeBase64Url(input: String): ByteArray? {
+    if (input.length % 4 == 1) return null
+    val out = ByteArray(input.length * 6 / 8)
+    var buffer = 0
+    var bits = 0
+    var index = 0
+    for (c in input) {
+        val v = when (c) {
+            in 'A'..'Z' -> c - 'A'
+            in 'a'..'z' -> c - 'a' + 26
+            in '0'..'9' -> c - '0' + 52
+            '-' -> 62
+            '_' -> 63
+            else -> return null
+        }
+        buffer = ((buffer shl 6) or v) and 0xFFFFFF
+        bits += 6
+        if (bits >= 8) {
+            bits -= 8
+            out[index++] = ((buffer shr bits) and 0xFF).toByte()
+        }
+    }
+    return out
 }
 
 /** Active ISO 4217 codes (incl. funds / precious metals / test codes). Re-check against ISO periodically. */
@@ -317,6 +368,23 @@ sealed class StringCases {
         }
     }
 
+    class LengthCase(
+        val length: Int,
+        override val userError: String? = null
+    ) : BuilderCase<String>() {
+        init {
+            require(length >= 0) { "length must be >= 0" }
+        }
+
+        override fun validate(value: String): String? {
+            return if (value.length == length) null else getError()
+        }
+
+        override fun errorFactory(): String {
+            return "Length must be exactly $length"
+        }
+    }
+
     class RegexCase(
         val regex: Regex,
         val fullMatch: Boolean = true,
@@ -329,18 +397,6 @@ sealed class StringCases {
 
         override fun errorFactory(): String {
             return "Value does not match pattern ${regex.pattern}"
-        }
-    }
-
-    class EmojiCase(
-        override val userError: String? = null
-    ) : BuilderCase<String>() {
-        override fun validate(value: String): String? {
-            return if (isEmoji(value)) null else getError()
-        }
-
-        override fun errorFactory(): String {
-            return "Value must be an emoji"
         }
     }
 
@@ -378,47 +434,6 @@ sealed class StringCases {
         }
     }
 
-    class GuidCase(
-        override val userError: String? = null
-    ) : PatternCase(StringPatterns.GUID) {
-        override fun errorFactory(): String {
-            return "Invalid GUID"
-        }
-    }
-
-    class NanoidCase(
-        val length: Int = 21,
-        override val userError: String? = null
-    ) : PatternCase(StringPatterns.nanoid(length)) {
-        override fun errorFactory(): String {
-            return "Invalid nanoid (expected $length characters of A-Z a-z 0-9 _ -)"
-        }
-    }
-
-    class CuidCase(
-        override val userError: String? = null
-    ) : PatternCase(StringPatterns.CUID) {
-        override fun errorFactory(): String {
-            return "Invalid cuid"
-        }
-    }
-
-    class Cuid2Case(
-        override val userError: String? = null
-    ) : PatternCase(StringPatterns.CUID2) {
-        override fun errorFactory(): String {
-            return "Invalid cuid2"
-        }
-    }
-
-    class UlidCase(
-        override val userError: String? = null
-    ) : PatternCase(StringPatterns.ULID) {
-        override fun errorFactory(): String {
-            return "Invalid ULID"
-        }
-    }
-
     class HexColorCase(
         val lengths: Set<Int> = setOf(3, 4, 6, 8),
         val hash: Boolean = true,
@@ -438,16 +453,11 @@ sealed class StringCases {
         private val expectedProtocol = protocol?.removeSuffix(":")
 
         override fun validate(value: String): String? {
-            val uri = try {
-                URI(value)
-            } catch (e: URISyntaxException) {
+            val parsed = parseUrl(value) ?: return getError()
+            if (expectedProtocol != null && !parsed.scheme.equals(expectedProtocol, ignoreCase = true)) {
                 return getError()
             }
-            val scheme = uri.scheme ?: return getError()
-            if (expectedProtocol != null && !scheme.equals(expectedProtocol, ignoreCase = true)) {
-                return getError()
-            }
-            if (hostname != null && uri.host?.equals(hostname, ignoreCase = true) != true) {
+            if (hostname != null && parsed.host?.equals(hostname, ignoreCase = true) != true) {
                 return getError()
             }
             return null
@@ -579,11 +589,8 @@ sealed class StringCases {
             if (header.isEmpty() || payload.isEmpty()) return getError()
             if (!parts.all { StringPatterns.BASE64URL.matches(it) }) return getError()
 
-            val json = try {
-                String(Base64.getUrlDecoder().decode(header), Charsets.UTF_8).trim()
-            } catch (e: IllegalArgumentException) {
-                return getError()
-            }
+            val bytes = decodeBase64Url(header) ?: return getError()
+            val json = bytes.decodeToString().trim()
             if (!json.startsWith("{") || !json.endsWith("}")) return getError()
 
             val typ = StringPatterns.JWT_TYP.find(json)?.groupValues?.get(1)
@@ -607,23 +614,6 @@ sealed class StringCases {
     ) : PatternCase(StringPatterns.hash(algorithm, encoding)) {
         override fun errorFactory(): String {
             return "Invalid ${algorithm.name.lowercase()} hash (${encoding.name.lowercase()})"
-        }
-    }
-
-    class LengthCase(
-        val length: Int,
-        override val userError: String? = null
-    ) : BuilderCase<String>() {
-        init {
-            require(length >= 0) { "length must be >= 0" }
-        }
-
-        override fun validate(value: String): String? {
-            return if (value.length == length) null else getError()
-        }
-
-        override fun errorFactory(): String {
-            return "Length must be exactly $length"
         }
     }
 
@@ -694,11 +684,12 @@ class StringSchema(
     fun notBlank(error: String? = null) = case(StringCases.NotBlankCase(userError = error))
     fun min(min: Int, error: String? = null) = case(StringCases.MinCase(min = min, userError = error))
     fun max(max: Int, error: String? = null) = case(StringCases.MaxCase(max = max, userError = error))
+    fun length(length: Int, error: String? = null) =
+        case(StringCases.LengthCase(length = length, userError = error))
 
     fun regex(regex: Regex, fullMatch: Boolean = true, error: String? = null) =
         case(StringCases.RegexCase(regex = regex, fullMatch = fullMatch, userError = error))
 
-    fun emoji(error: String? = null) = case(StringCases.EmojiCase(userError = error))
     fun base64(error: String? = null) = case(StringCases.Base64Case(userError = error))
     fun base64url(error: String? = null) = case(StringCases.Base64UrlCase(userError = error))
 
@@ -708,14 +699,6 @@ class StringSchema(
     /** [version] = null accepts any version (plus the nil and max UUIDs). */
     fun uuid(version: UuidVersion? = UuidVersion.V4, error: String? = null) =
         case(StringCases.UuidCase(version = version, userError = error))
-
-    fun guid(error: String? = null) = case(StringCases.GuidCase(userError = error))
-    fun nanoid(length: Int = 21, error: String? = null) =
-        case(StringCases.NanoidCase(length = length, userError = error))
-
-    fun cuid(error: String? = null) = case(StringCases.CuidCase(userError = error))
-    fun cuid2(error: String? = null) = case(StringCases.Cuid2Case(userError = error))
-    fun ulid(error: String? = null) = case(StringCases.UlidCase(userError = error))
 
     fun hexColor(
         lengths: Set<Int> = setOf(3, 4, 6, 8),
@@ -747,9 +730,6 @@ class StringSchema(
         encoding: HashEncoding = HashEncoding.HEX,
         error: String? = null
     ) = case(StringCases.HashCase(algorithm = algorithm, encoding = encoding, userError = error))
-
-    fun length(length: Int, error: String? = null) =
-        case(StringCases.LengthCase(length = length, userError = error))
 
     fun isoDate(error: String? = null) = case(StringCases.IsoDateCase(userError = error))
 

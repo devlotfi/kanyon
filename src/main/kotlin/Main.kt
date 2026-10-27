@@ -31,13 +31,13 @@ fun main() {
     val validation2 = FieldSchema().int().gt(10).multipleOf(5).build()
     println("Validation: ${validation2.validate(15)}")
 
-    val validation3 = FieldSchema().any().validateHandler(
+    val validation3 = FieldSchema().isOf<List<String>>().validateHandler(
         validationHandler = {
-            it is List<*> && it.size > 2
+            it.size > 2
         },
         error = "List error"
     ).build()
-    println("Validation: ${validation3.validate(listOf("lol", "lol", "lol"))}")
+    println("Validation: ${validation3.validate(listOf("lol", "lol"))}")
 
     val lol = User(
         firstName = "Lol",
