@@ -1,0 +1,31 @@
+# Kanyon
+
+> Kanyon is a declarative, pure Kotlin validation library for validating individual values and object properties with composable schemas. It returns `null` for valid values or a human-readable validation error, and is designed for Kotlin Multiplatform.
+
+## Documentation
+
+- [Introduction](https://devlotfi.github.io/kanyon/intro.md): Library overview, quick-start examples, and links to the documentation sections.
+- [Core concepts](https://devlotfi.github.io/kanyon/core-concepts.md): Schemas, cases, `FieldSchema`, validation flow, and the error model.
+- [Building schemas](https://devlotfi.github.io/kanyon/building-schemas.md): Schema entry points, standalone schemas, `build()`, and nullable configuration.
+- [Common methods](https://devlotfi.github.io/kanyon/common-methods.md): Methods shared across schemas, including validation, comparisons, nullability, and custom handlers.
+- [AnySchema](https://devlotfi.github.io/kanyon/any.md): Accepting any non-null value and applying additional validation rules.
+- [IsSchema](https://devlotfi.github.io/kanyon/is.md): Runtime type checks for classes, lists, maps, and nested values.
+- [EnumSchema](https://devlotfi.github.io/kanyon/enum.md): Validating enum instances and enum ordering.
+- [oneOf, enums, and comparisons](https://devlotfi.github.io/kanyon/enums-and-one-of.md): Restricting values to a set and composing enum and comparison rules.
+- [Numeric schemas](https://devlotfi.github.io/kanyon/numeric.md): Numeric comparisons, equality, multiples, and even/odd checks.
+- [BooleanSchema](https://devlotfi.github.io/kanyon/boolean.md): Boolean validation and equality checks.
+- [Length and content](https://devlotfi.github.io/kanyon/length-and-content.md): String blankness, length limits, and regular-expression validation.
+- [Encodings](https://devlotfi.github.io/kanyon/encodings.md): Standard Base64 and URL-safe Base64 validation.
+- [Identifiers](https://devlotfi.github.io/kanyon/identifiers.md): Email, UUID, color, URL, and related string validation rules.
+- [Phone and network](https://devlotfi.github.io/kanyon/network.md): Phone numbers, IP addresses, CIDR ranges, and MAC addresses.
+- [Finance](https://devlotfi.github.io/kanyon/finance.md): Credit card, ISO currency code, and IBAN validation.
+- [Tokens and hashes](https://devlotfi.github.io/kanyon/tokens-and-hashes.md): JWT structure and hash validation with supported algorithms and encodings.
+- [Date and time](https://devlotfi.github.io/kanyon/date-and-time.md): ISO date, time, and date-time validation and precision options.
+- [ValidatedObject](https://devlotfi.github.io/kanyon/validated-object.md): Property delegates, object validation, validity checks, and cross-field rules.
+- [Custom validation](https://devlotfi.github.io/kanyon/custom-validation.md): Adding custom validation handlers and builder cases.
+- [Validating a single value](https://devlotfi.github.io/kanyon/single-value.md): Examples of composing and using schemas for individual values.
+- [Custom validation function](https://devlotfi.github.io/kanyon/custom-function.md): Defining and using a custom validation function.
+- [Object validation](https://devlotfi.github.io/kanyon/object-validation.md): Validating object properties and reporting errors by property.
+- [Nested objects, lists, and maps](https://devlotfi.github.io/kanyon/nested-structures.md): Validating collections and nested structures, including element-level errors.
+- [Dates, identifiers, and network values](https://devlotfi.github.io/kanyon/dates-and-identifiers.md): Combined examples applying date, identifier, and network rules.
+- [Errors, exceptions, and gotchas](https://devlotfi.github.io/kanyon/errors-and-gotchas.md): Schema-construction exceptions, validation behavior, and important limitations.
