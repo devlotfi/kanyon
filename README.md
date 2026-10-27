@@ -82,5 +82,5 @@ form.valid() // false
 
 ## Documentation
 
-- [Docs](https://github.com/devlotfi/kanyon/blob/main/docs/intro.md)
+- [Docs](https://github.com/devlotfi/kanyon/blob/master/docs/intro.md)
 - [llms.txt](https://devlotfi.github.io/kanyon/llms.txt)
