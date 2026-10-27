@@ -1,5 +1,3 @@
-[← Home](../../../README.md) · [Schemas](../README.md) · [StringSchema](intro.md)
-
 # Identifiers
 
 ## `email(pattern: Regex? = null, error?)`

@@ -1,5 +1,3 @@
-[← Home](../../../README.md) · [Schemas](../README.md) · [StringSchema](intro.md)
-
 # Length and content
 
 | Method                            | Params                                                          | Passes when                                                                                                     | Default error                                  |

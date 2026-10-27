@@ -1,5 +1,3 @@
-[← Home](../README.md)
-
 # Custom validation
 
 ## Custom validation function: `validateHandler`

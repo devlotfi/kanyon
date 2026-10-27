@@ -1,5 +1,3 @@
-[← Home](../../../README.md) · [Schemas](../README.md) · [StringSchema](intro.md)
-
 # Phone and network
 
 | Method                   | Params                                                                                                   | Passes when                                                                                                               | Default error                         |

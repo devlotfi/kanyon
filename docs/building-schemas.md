@@ -1,5 +1,3 @@
-[← Home](../README.md)
-
 # Building schemas
 
 There are two ways to create a schema.

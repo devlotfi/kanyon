@@ -1,5 +1,3 @@
-[← Home](../../README.md) · [Schemas](intro.md)
-
 # `EnumSchema<E>`
 
 Created with `FieldSchema().enumOf<E>()`. Accepts instances of the enum `E`. It is a **comparable schema**, so it

@@ -1,5 +1,3 @@
-[← Home](../../README.md) · [Examples](intro.md)
-
 # Dates, identifiers and network values
 
 ```kotlin

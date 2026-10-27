@@ -1,5 +1,3 @@
-[← Home](../../../README.md) · [Schemas](../README.md) · [StringSchema](intro.md)
-
 # Tokens and hashes
 
 ## `jwt(algorithm: JwtAlgorithm? = null, error?)`

@@ -1,5 +1,3 @@
-[← Home](../../../README.md) · [Schemas](../README.md) · [StringSchema](intro.md)
-
 # Date and time (ISO 8601 / RFC 3339 style)
 
 All of these validate the **string format**, and dates are also checked against the real calendar (leap years, month

@@ -1,5 +1,3 @@
-[← Home](../../README.md) · [Examples](intro.md)
-
 # Validating a single value
 
 ```kotlin

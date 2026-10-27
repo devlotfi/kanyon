@@ -1,5 +1,3 @@
-[← Home](../README.md)
-
 # Errors, exceptions and gotchas
 
 ## Exceptions thrown while building schemas

@@ -1,5 +1,3 @@
-[← Home](../README.md)
-
 # `ValidatedObject`
 
 `ValidatedObject` lets you attach a schema to each property of a class and validate the whole object in one call.

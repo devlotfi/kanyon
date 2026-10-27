@@ -1,5 +1,3 @@
-[← Home](../../README.md) · [Schemas](intro.md)
-
 # `IsSchema<E>`
 
 Created with `FieldSchema().isOf<E>()`. Passes if `value is E` (subclasses and implementations are accepted), then runs

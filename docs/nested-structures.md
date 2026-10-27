@@ -1,5 +1,3 @@
-[← Home](../../README.md) · [Examples](intro.md)
-
 # Nested objects, lists and maps
 
 Nested objects, lists and maps are validated **manually by you** with `isOf<...>()` and a custom `validateHandler` on

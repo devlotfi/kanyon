@@ -1,5 +1,3 @@
-[← Home](../../../README.md) · [Schemas](../README.md) · [StringSchema](intro.md)
-
 # Encodings
 
 | Method              | Passes when                                                                                                            | Default error                   |

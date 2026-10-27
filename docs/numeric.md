@@ -1,5 +1,3 @@
-[← Home](../../README.md) · [Schemas](intro.md)
-
 # Numeric schemas and comparable cases
 
 `IntSchema`, `LongSchema`, `ShortSchema`, `ByteSchema`, `FloatSchema`, `DoubleSchema` (and `EnumSchema`) all extend

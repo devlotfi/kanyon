@@ -1,5 +1,3 @@
-[← Home](../../README.md) · [Examples](intro.md)
-
 # Custom validation function
 
 ```kotlin

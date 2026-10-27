@@ -1,5 +1,3 @@
-[← Home](../../README.md) · [Schemas](intro.md)
-
 # `BooleanSchema`
 
 Created with `FieldSchema().boolean()` or `BooleanSchema()`.

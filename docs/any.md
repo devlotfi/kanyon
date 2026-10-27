@@ -1,5 +1,3 @@
-[← Home](../../README.md) · [Schemas](intro.md)
-
 # `AnySchema`
 
 Created with `FieldSchema().any()`. Accepts any **non-null** value and then runs the cases you add. It only has

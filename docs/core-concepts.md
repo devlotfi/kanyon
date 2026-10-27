@@ -1,5 +1,3 @@
-[← Home](../README.md)
-
 # Core concepts
 
 | Concept | Description |

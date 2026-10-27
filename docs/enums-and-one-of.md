@@ -1,5 +1,3 @@
-[← Home](../../README.md) · [Examples](intro.md)
-
 # `oneOf`, enums and comparisons
 
 ```kotlin

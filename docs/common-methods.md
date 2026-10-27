@@ -1,5 +1,3 @@
-[← Home](../README.md)
-
 # Methods available on every schema
 
 These come from `BaseSchema<T, S>` and are available on **all** schemas (`StringSchema`, `IntSchema`, `FieldSchema`, ...).
