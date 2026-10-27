@@ -1,6 +1,5 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/devlotfi/kanyon/master/github-assets/github-banner.png" alt="Kanyon">
-</p>
+<img src="https://raw.githubusercontent.com/devlotfi/kanyon/master/github-assets/github-banner.png" alt="Kanyon">
+
 
 # Kanyon
 
