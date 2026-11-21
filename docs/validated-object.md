@@ -24,11 +24,11 @@ class SignUpForm : ValidatedObject() {
 
 ## API
 
-| Member | Description |
-|---|---|
-| `validatedProperty(initial: T, schema: FieldSchema? = null)` | Property delegate. Declare with `var x by validatedProperty(initialValue, schema)`. The property is registered under its **Kotlin property name**. With `schema = null` the property is stored but never produces an error. |
-| `open fun validate(): Map<String, String>` | Validates every registered property (in declaration order) and returns a map of **property name → error message**. Valid properties are absent. An empty map means the object is valid. Only the first failing rule of each property is reported. |
-| `fun valid(): Boolean` | `validate().isEmpty()`. Because it calls `validate()`, it respects overrides. |
+| Member                                                       | Description                                                                                                                                                                                                                                       |
+|--------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `validatedProperty(initial: T, schema: FieldSchema? = null)` | Property delegate. Declare with `var x by validatedProperty(initialValue, schema)`. The property is registered under its **Kotlin property name**. With `schema = null` the property is stored but never produces an error.                       |
+| `open fun validate(): Map<String, String>`                   | Validates every registered property (in declaration order) and returns a map of **property name → error message**. Valid properties are absent. An empty map means the object is valid. Only the first failing rule of each property is reported. |
+| `fun valid(): Boolean`                                       | `validate().isEmpty()`. Because it calls `validate()`, it respects overrides.                                                                                                                                                                     |
 
 ## Reading and writing
 

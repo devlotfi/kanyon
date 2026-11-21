@@ -1,7 +1,7 @@
-package com.devlotfi.kanyon.schema
+package com.github.devlotfi.kanyon.schema
 
 class AnySchema(
-    override val root: FieldSchema? = null
+  override val root: FieldSchema? = null
 ) : BaseSchema<Any, AnySchema>() {
-    override val self get() = this
+  override val self get() = this
 }

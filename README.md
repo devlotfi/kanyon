@@ -31,9 +31,9 @@ Validate a single value with `FieldSchema`:
 import com.devlotfi.kanyon.schema.FieldSchema
 
 val emailSchema = FieldSchema()
-    .string()
-    .email()
-    .build()
+  .string()
+  .email()
+  .build()
 
 emailSchema.validate("alex@example.com") // null: valid
 emailSchema.validate("not-an-email")     // "Invalid email address"
@@ -46,9 +46,9 @@ For values that already have a known type, use a standalone typed schema:
 import com.devlotfi.kanyon.schema.StringSchema
 
 val error = StringSchema()
-    .notBlank()
-    .min(3)
-    .validate("ab")
+  .notBlank()
+  .min(3)
+  .validate("ab")
 
 println(error) // Length must be at least 3
 ```
@@ -60,19 +60,19 @@ import com.devlotfi.kanyon.ValidatedObject
 import com.devlotfi.kanyon.schema.FieldSchema
 
 class SignUpForm : ValidatedObject() {
-    var username by validatedProperty(
-        "",
-        FieldSchema().string().notBlank().min(3).build()
-    )
-    var email by validatedProperty(
-        "",
-        FieldSchema().string().email().build()
-    )
+  var username by validatedProperty(
+    "",
+    FieldSchema().string().notBlank().min(3).build()
+  )
+  var email by validatedProperty(
+    "",
+    FieldSchema().string().email().build()
+  )
 }
 
 val form = SignUpForm().apply {
-    username = "ab"
-    email = "not-an-email"
+  username = "ab"
+  email = "not-an-email"
 }
 
 form.validate()
