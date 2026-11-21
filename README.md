@@ -1,6 +1,5 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/devlotfi/kanyon/master/github-assets/github-banner.png" alt="Kanyon">
-</p>
+<img src="https://raw.githubusercontent.com/devlotfi/kanyon/master/github-assets/github-banner.png" alt="Kanyon">
+
 
 # Kanyon
 
@@ -22,6 +21,11 @@ message when it is not.
 
 Kanyon is published on [JitPack](https://jitpack.io/#devlotfi/kanyon). Add JitPack to the repositories used to resolve
 dependencies in your root `settings.gradle.kts`:
+
+## Documentation
+
+- [Docs](https://github.com/devlotfi/kanyon/blob/master/docs/intro.md)
+- [llms.txt](https://devlotfi.github.io/kanyon/llms.txt)
 
 ## Quick start
 
@@ -79,8 +83,3 @@ form.validate()
 // {username=Length must be at least 3, email=Invalid email address}
 form.valid() // false
 ```
-
-## Documentation
-
-- [Docs](https://github.com/devlotfi/kanyon/blob/master/docs/intro.md)
-- [llms.txt](https://devlotfi.github.io/kanyon/llms.txt)
